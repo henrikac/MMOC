@@ -23,34 +23,44 @@
 #include <stdlib.h>
 #include <string.h>
 
+void prod_code_scan(char prod_code[], char *warehouse, char *id, char *qualifier);
+
 int main(void)
 {
-  int i;
-  char warehouse[25], prod_id[25], qualifier[25];
-  char str_in[] = "ATL1203S14";
+  char *warehouse, *prod_id, *qualifier;
+  char prod_code[] = "ATL1203S14";
+  size_t max_chars = strlen(prod_code);
 
-  for (i = 0; i < strlen(warehouse); i++)
-  {
-    warehouse[i] = '\0';
-    prod_id[i] = '\0';
-    qualifier[i] = '\0';
-  }
+  warehouse = (char*)calloc(max_chars, sizeof(char));
+  prod_id = (char*)calloc(max_chars, sizeof(char));
+  qualifier = (char*)calloc(max_chars, sizeof(char));
 
-  while (strlen(qualifier) < 1)
-  {
-    if (isdigit(str_in[i]) && strlen(warehouse) < 1)
-      strncat(warehouse, &str_in[0], i);
-    else if (strlen(warehouse) > 0 && !isdigit(str_in[i]) && isupper(str_in[i]))
-      strncat(prod_id, &str_in[strlen(warehouse)], i - strlen(warehouse));
-    else if (strlen(prod_id) > 0)
-      strncat(qualifier, &str_in[strlen(warehouse) + strlen(prod_id)], strlen(str_in) - strlen(prod_id) - strlen(warehouse));
-
-    i++;
-  }
+  prod_code_scan(prod_code, warehouse, prod_id, qualifier);
 
   printf("\nWarehouse: %s", warehouse);
   printf("\nID: %s", prod_id);
   printf("\nQualifier: %s", qualifier);
 
+  free(warehouse);
+  free(prod_id);
+  free(qualifier);
+
   return EXIT_SUCCESS;
+}
+
+void prod_code_scan(char prod_code[], char *warehouse, char *id, char *qualifier)
+{
+  int i = 0;
+
+  while (strlen(qualifier) < 1)
+  {
+    if (isdigit(prod_code[i]) && strlen(warehouse) < 1)
+      strncpy(warehouse, &prod_code[0], i);
+    else if (strlen(warehouse) > 0 && !isdigit(prod_code[i]) && isupper(prod_code[i]))
+      strncpy(id, &prod_code[strlen(warehouse)], i - strlen(warehouse));
+    else if (strlen(id) > 0)
+      strncpy(qualifier, &prod_code[strlen(warehouse) + strlen(id)], strlen(prod_code) - strlen(id) - strlen(warehouse));
+
+    i++;
+  }
 }
