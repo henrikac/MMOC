@@ -1,5 +1,5 @@
 /*
- * Programmer: Henrik A. Christensen     Date Completed: in progress
+ * Programmer: Henrik A. Christensen     Date Completed: 02-11-2018
  * Instructor: Kurt Nørmark              Class:          Imperative Programming
  *
  * Write a program to take a product code from Millie's Mail-Order Catalog
@@ -14,7 +14,7 @@
  * Example: ATL1203S14
  *
  * Product: 1203
- * Size: 14
+ * Qualifier: S14
  * Warehouse: ATL (Atlanta)
 */
 
@@ -49,6 +49,11 @@ int main(void)
   return EXIT_SUCCESS;
 }
 
+/**
+ * Allocate num_bytes and checks if allocation is possible
+ * @param[in] num_chars Numbers of characters to allocate memory for
+ * @return char *
+*/
 char *talloc(size_t num_chars)
 {
   char *p = (char*)calloc(num_chars, sizeof(char));
@@ -60,6 +65,13 @@ char *talloc(size_t num_chars)
   return p;
 }
 
+/**
+ * Splits a production code into 3 pieces (warehouse location, item id, qualifier)
+ * @param[in] Production code to split
+ * @param[out] The items location
+ * @param[out] The items id
+ * @param[out] The items qualifier
+*/
 void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier)
 {
   int i = 0;
