@@ -93,7 +93,7 @@ void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qua
     else if (len_id > 0)
     {
       len_qua = len_prod_code - (len_id + len_warehouse);
-      strncpy(qualifier, &prod_code[strlen(warehouse) + strlen(id)], len_qua);
+      strncpy(qualifier, &prod_code[len_warehouse + len_id], len_qua);
     }
 
     i++;
