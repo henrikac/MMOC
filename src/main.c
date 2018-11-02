@@ -23,7 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void prod_code_scan(char prod_code[], char *warehouse, char *id, char *qualifier);
+char *talloc(size_t num_chars);
+void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier);
 
 int main(void)
 {
@@ -31,9 +32,9 @@ int main(void)
   char prod_code[] = "ATL1203S14";
   size_t max_chars = strlen(prod_code);
 
-  warehouse = (char*)calloc(max_chars, sizeof(char));
-  prod_id = (char*)calloc(max_chars, sizeof(char));
-  qualifier = (char*)calloc(max_chars, sizeof(char));
+  warehouse = talloc(max_chars);
+  prod_id = talloc(max_chars);
+  qualifier = talloc(max_chars);
 
   prod_code_scan(prod_code, warehouse, prod_id, qualifier);
 
@@ -48,7 +49,18 @@ int main(void)
   return EXIT_SUCCESS;
 }
 
-void prod_code_scan(char prod_code[], char *warehouse, char *id, char *qualifier)
+char *talloc(size_t num_chars)
+{
+  char *p = (char*)calloc(num_chars, sizeof(char));
+  if (p == NULL)
+  {
+    printf("\nCouldn't allocate memory");
+    exit(EXIT_FAILURE);
+  }
+  return p;
+}
+
+void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier)
 {
   int i = 0;
 
