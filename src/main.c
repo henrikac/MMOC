@@ -24,19 +24,19 @@
 #include <string.h>
 
 char *talloc(size_t num_chars);
-void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier);
+void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier, size_t len_prod_code);
 
 int main(void)
 {
   char *warehouse, *prod_id, *qualifier;
   char prod_code[] = "ATL1203S14";
-  size_t max_chars = strlen(prod_code);
+  size_t len_prod_code = strlen(prod_code);
 
-  warehouse = talloc(max_chars);
-  prod_id = talloc(max_chars);
-  qualifier = talloc(max_chars);
+  warehouse = talloc(len_prod_code);
+  prod_id = talloc(len_prod_code);
+  qualifier = talloc(len_prod_code);
 
-  prod_code_scan(prod_code, warehouse, prod_id, qualifier);
+  prod_code_scan(prod_code, warehouse, prod_id, qualifier, len_prod_code);
 
   printf("\nWarehouse: %s", warehouse);
   printf("\nID: %s", prod_id);
@@ -68,22 +68,33 @@ char *talloc(size_t num_chars)
 /**
  * Splits a production code into 3 pieces (warehouse location, item id, qualifier)
  * @param[in] Production code to split
- * @param[out] The items location
- * @param[out] The items id
- * @param[out] The items qualifier
+ * @param[out] warehouse The items location
+ * @param[out] id The items id
+ * @param[out] qualifier The items qualifier
+ * @param[in] len_prod_code The length of the production code
 */
-void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier)
+void prod_code_scan(const char prod_code[], char *warehouse, char *id, char *qualifier, size_t len_prod_code)
 {
   int i = 0;
+  size_t len_warehouse = 0, len_id = 0, len_qua = 0;
 
-  while (strlen(qualifier) < 1)
+  while (len_qua < 1)
   {
-    if (isdigit(prod_code[i]) && strlen(warehouse) < 1)
-      strncpy(warehouse, &prod_code[0], i);
-    else if (strlen(warehouse) > 0 && !isdigit(prod_code[i]) && isupper(prod_code[i]))
-      strncpy(id, &prod_code[strlen(warehouse)], i - strlen(warehouse));
-    else if (strlen(id) > 0)
-      strncpy(qualifier, &prod_code[strlen(warehouse) + strlen(id)], strlen(prod_code) - strlen(id) - strlen(warehouse));
+    if (isdigit(prod_code[i]) && len_warehouse < 1)
+    {
+      len_warehouse = i;
+      strncpy(warehouse, &prod_code[0], len_warehouse);
+    }
+    else if (len_warehouse > 0 && !isdigit(prod_code[i]) && isupper(prod_code[i]))
+    {
+      len_id = i - len_warehouse;
+      strncpy(id, &prod_code[strlen(warehouse)], len_id);
+    }
+    else if (len_id > 0)
+    {
+      len_qua = len_prod_code - (len_id + len_warehouse);
+      strncpy(qualifier, &prod_code[strlen(warehouse) + strlen(id)], len_qua);
+    }
 
     i++;
   }
